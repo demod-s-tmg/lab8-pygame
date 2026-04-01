@@ -13,6 +13,8 @@ MAX_SIZE = 50
 GLOBAL_MAX_SPEED = 4.0
 V_MAX = GLOBAL_MAX_SPEED
 V_MIN = 1.0
+JITTER_PROBABILITY = 0.04
+MAX_JITTER_ANGLE = 0.12  # Radians; about 6.9 degrees
 
 BACKGROUND_COLOR = (255, 255, 255)
 FPS = 60
@@ -40,6 +42,15 @@ class Square:
         )
 
     def update(self):
+        if random.random() < JITTER_PROBABILITY:
+            current_angle = math.atan2(self.vy, self.vx)
+            jitter = random.uniform(-MAX_JITTER_ANGLE, MAX_JITTER_ANGLE)
+            new_angle = current_angle + jitter
+
+            speed = min(math.hypot(self.vx, self.vy), self.max_speed)
+            self.vx = math.cos(new_angle) * speed
+            self.vy = math.sin(new_angle) * speed
+
         self.x += self.vx
         self.y += self.vy
 
