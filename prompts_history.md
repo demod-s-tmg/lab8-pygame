@@ -29,3 +29,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 01-04-2026 17:44
 - **Prompt**: Can you help me modify the __init__ so each square has a random size between 10 and 50? Also, show me how to calculate a max_speed attribute for each square where the larger the size, the slower the speed. Please explain the math without writing the full code for me yet. and give me the todos so i would know what i need to do for it !
 
+### 01-04-2026 17:52
+- **Prompt**: Add a max speed attribute for each square which is a function of its size (the bigger the slower), and can not exceed the global max speed.
+
