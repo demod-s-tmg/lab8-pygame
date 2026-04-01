@@ -35,3 +35,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 01-04-2026 17:57
 - **Prompt**: Jitter - Make each square change its direction randomly a little bit over time.
 
+### 01-04-2026 18:05
+- **Prompt**: can you create MY_NOTES.md
+
