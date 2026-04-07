@@ -81,6 +81,12 @@ def main():
     clock = pygame.time.Clock()
     squares = create_squares(NUM_SQUARES)
 
+    # fps frame rate display
+    font = pygame.font.SysFont("Arial", 20, bold=True)
+
+    clock = pygame.time.Clock()
+    squares = create_squares(NUM_SQUARES)
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -92,6 +98,10 @@ def main():
         for square in squares:
             square.update()
             square.draw(screen)
+
+            # Calculate FPS and render it to the screen
+        fps_text = font.render(f"FPS: {int(clock.get_fps())}", True, (0, 0, 0))
+        screen.blit(fps_text, (10, 10))  # Positions it in the top-left corner
 
         pygame.display.flip()
         clock.tick(FPS)
