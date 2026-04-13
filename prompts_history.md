@@ -47,3 +47,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 09-04-2026 16:10
 - **Prompt**: update my readme.md correctly
 
+### 13-04-2026 11:49
+- **Prompt**: generate the code explorer site for tis project
+
