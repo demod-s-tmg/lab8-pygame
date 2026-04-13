@@ -7,7 +7,6 @@ pygame.init()
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-NUM_SQUARES = 100
 NUM_SQUARES = 20
 MIN_SIZE = 10
 MAX_SIZE = 50
@@ -15,7 +14,6 @@ GLOBAL_MAX_SPEED = 4.0
 V_MAX = GLOBAL_MAX_SPEED
 V_MIN = 1.0
 JITTER_PROBABILITY = 0.04
-MAX_JITTER_ANGLE = 0.12  # Radians; about 6.9 degrees
 MAX_JITTER_ANGLE = 0.12
 
 FLEE_RADIUS = 60
@@ -89,14 +87,12 @@ class Square:
         self.x += self.vx
         self.y += self.vy
 
-        if self.x <= 0 or self.x + self.size >= SCREEN_WIDTH:
         if self.x <= 0:
             self.x = 0
             self.vx *= -1
         elif self.x + self.size >= SCREEN_WIDTH:
             self.x = SCREEN_WIDTH - self.size
             self.vx *= -1
-        if self.y <= 0 or self.y + self.size >= SCREEN_HEIGHT:
 
         if self.y <= 0:
             self.y = 0
@@ -127,11 +123,7 @@ def main():
     clock = pygame.time.Clock()
     squares = create_squares(NUM_SQUARES)
 
-    # fps frame rate display
     font = pygame.font.SysFont("Arial", 20, bold=True)
-
-    clock = pygame.time.Clock()
-    squares = create_squares(NUM_SQUARES)
 
     running = True
     while running:
@@ -146,9 +138,7 @@ def main():
             square.update()
             square.draw(screen)
 
-            # Calculate FPS and render it to the screen
         fps_text = font.render(f"FPS: {int(clock.get_fps())}", True, (0, 0, 0))
-        screen.blit(fps_text, (10, 10))  # Positions it in the top-left corner
         screen.blit(fps_text, (10, 10))
 
         pygame.display.flip()
