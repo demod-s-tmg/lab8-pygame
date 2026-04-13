@@ -38,5 +38,5 @@ Read the journal-logger.md file and activate it to track my work for this projec
 
 ### **New Interaction**
 - **Hook Version**: 1.02
-- **Date**: 13-04-2026 11:51
-- **Prompt**: can you generate the code explorere site for this project as it is in the journal template
+- **Date**: 13-04-2026 11:59
+- **Prompt**: can you remove all of the implimentations you did today and make it as it was
