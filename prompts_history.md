@@ -46,3 +46,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 
 ### 09-04-2026 16:10
 - **Prompt**: update my readme.md correctly
+### 14-04-2026 12:01
+- **Prompt**: activate the journal logger
+
