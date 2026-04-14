@@ -47,12 +47,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 09-04-2026 16:10
 - **Prompt**: update my readme.md correctly
 
-### 13-04-2026 11:49
-- **Prompt**: generate the code explorer site for tis project
-
-### 13-04-2026 11:51
-- **Prompt**: can you generate the code explorere site for this project as it is in the journal template
-
-### 13-04-2026 11:59
-- **Prompt**: can you remove all of the implimentations you did today and make it as it was
+### 14-04-2026 11:40
+- **Prompt**: generate the code explorer site for this project
 
