@@ -61,3 +61,8 @@
 - **Hook Version**: 1.02
 - **Date**: 16-04-2026 19:11
 - **Prompt**: regenerate the code explorer site.
+
+### **New Interaction**
+- **Hook Version**: 1.02
+- **Date**: 16-04-2026 19:11
+- **Prompt**: Regenerate the code explorer site for this workspace from current source files. Analyze the Python codebase and produce/update the dashboard HTML at docs/code_explorer.html. Ensure links/sections are coherent and reflect current project state. Return what file(s) were written and a concise summary of what changed.
