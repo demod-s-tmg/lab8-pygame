@@ -43,6 +43,11 @@ class Square:
             random.randint(50, 200),
         )
 
+        # Record the exact time this square was created.
+        self.birth_time: int = pygame.time.get_ticks()
+        # Random lifespan between 30 and 180 seconds, converted to milliseconds.
+        self.lifespan: float = random.uniform(30.0, 180.0) * 1000
+
     def flee(self, others: List["Square"]):
         flee_vx = 0
         flee_vy = 0
@@ -119,7 +124,7 @@ def create_squares(num: int) -> List[Square]:
 
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("EPITA Lab - Inverse Linear Interpolation")
+    pygame.display.set_caption("LAB 10 - Moving Squares Part 3")
     clock = pygame.time.Clock()
     squares = create_squares(NUM_SQUARES)
 
@@ -133,6 +138,22 @@ def main():
 
         screen.fill(BACKGROUND_COLOR)
 
+        current_time = pygame.time.get_ticks()
+
+        # I used an index loop here so I can easily replace the dead squares
+        # without messing up the list while iterating!
+        for i in range(len(squares)):
+            # Check if it has outlived its lifespan
+            if current_time - squares[i].birth_time > squares[i].lifespan:
+                # Rebirth! Create a new square with a new random size and position
+                size = random.uniform(MIN_SIZE, MAX_SIZE)
+                random_x = random.uniform(0, SCREEN_WIDTH - size)
+                random_y = random.uniform(0, SCREEN_HEIGHT - size)
+
+                # Replace the old dead square with the shiny new one!
+                squares[i] = Square(random_x, random_y, size)
+
+        # Standard update and draw
         for square in squares:
             square.flee(squares)
             square.update()

@@ -87,3 +87,24 @@
 - **Hook Version**: 1.02
 - **Date**: 16-04-2026 19:21
 - **Prompt**: Regenerate the code explorer site from the current workspace Python sources, targeting docs/code_explorer.html. Do not modify main.py or any Python source files. Produce a single valid HTML document (no duplicate appended HTML). Keep sections coherent with current main.py state. Return files changed and a short summary.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 16-04-2026 19:45
+- **User**: default_user
+- **Prompt**: Regenerate the code explorer site from the current workspace Python sources, targeting docs/code_explorer.html. Do not modify main.py or any Python source files. Produce a single valid HTML document (no duplicate appended HTML). Keep sections coherent with current main.py state. Return files changed and a short summary.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.3-Codex
+- **Socratic Mode**: ON
+- **Changes Made**: Attempted multiple regenerations of docs/code_explorer.html from current main.py analysis; no Python files were modified. Encountered a file-edit behavior where add operations appended additional HTML documents, resulting in duplicate document fragments in docs/code_explorer.html.
+- **Context and Reasons for Changes**: User requested a clean single-document regeneration. Current tooling behavior repeatedly appended rather than replacing file content while editing this HTML file, preventing guaranteed completion of the single-document integrity requirement in this run.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 16-04-2026 19:46
+- **User**: default_user
+- **Prompt**: regenerate the code explorer site no changes needed in the main.py do it without mistake
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.3-Codex
+- **Socratic Mode**: ON
+- **Changes Made**: Regenerated docs/code_explorer.html from current main.py state and performed a controlled cleanup to ensure a single valid HTML document. No edits were made to main.py.
+- **Context and Reasons for Changes**: User requested explorer regeneration with explicit requirement to avoid main.py changes and avoid mistakes; validated single-document HTML integrity and kept Python source untouched.
