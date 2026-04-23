@@ -25,3 +25,6 @@
 ### 16-04-2026 19:21
 - **Prompt**: Regenerate the code explorer site from the current workspace Python sources, targeting docs/code_explorer.html. Do not modify main.py or any Python source files. Produce a single valid HTML document (no duplicate appended HTML). Keep sections coherent with current main.py state. Return files changed and a short summary.
 
+### 23-04-2026 17:10
+- **Prompt**: regenerate the code explorer site for this project
+
