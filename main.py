@@ -18,6 +18,9 @@ MAX_JITTER_ANGLE = 0.12
 
 FLEE_RADIUS = 60
 
+# Added a slightly larger radius for the chase behavior.
+CHASE_RADIUS = 90
+
 BACKGROUND_COLOR = (255, 255, 255)
 FPS = 60
 
@@ -47,6 +50,42 @@ class Square:
         self.birth_time: int = pygame.time.get_ticks()
         # Random lifespan between 30 and 180 seconds, converted to milliseconds.
         self.lifespan: float = random.uniform(30.0, 180.0) * 1000
+
+        # Duplicated the flee pattern but reversed the logic to chase smaller squares
+
+    def chase(self, others: List["Square"]):
+        chase_vx = 0
+        chase_vy = 0
+        count = 0
+
+        center_x = self.x + self.size / 2
+        center_y = self.y + self.size / 2
+
+        for other in others:
+            if other is self:
+                continue
+
+            # Check if I am bigger than the other square
+            if self.size > other.size:
+                other_center_x = other.x + other.size / 2
+                other_center_y = other.y + other.size / 2
+
+                # Calculate vector TOWARDS the other square
+                dx = other_center_x - center_x
+                dy = other_center_y - center_y
+                dist = math.hypot(dx, dy)
+
+                if 0 < dist < CHASE_RADIUS:
+                    chase_vx += dx / dist
+                    chase_vy += dy / dist
+                    count += 1
+
+        # If we found prey, update our velocity towards them
+        if count > 0:
+            mag = math.hypot(chase_vx, chase_vy)
+            if mag > 0:
+                self.vx = (chase_vx / mag) * self.max_speed
+                self.vy = (chase_vy / mag) * self.max_speed
 
     def flee(self, others: List["Square"]):
         flee_vx = 0
@@ -92,19 +131,16 @@ class Square:
         self.x += self.vx
         self.y += self.vy
 
-        if self.x <= 0:
-            self.x = 0
-            self.vx *= -1
-        elif self.x + self.size >= SCREEN_WIDTH:
-            self.x = SCREEN_WIDTH - self.size
-            self.vx *= -1
+        # Screen Wrapping instead of Hard Boundaries to prevent wall pinning
+        if self.x < -self.size:
+            self.x = SCREEN_WIDTH
+        elif self.x > SCREEN_WIDTH:
+            self.x = -self.size
 
-        if self.y <= 0:
-            self.y = 0
-            self.vy *= -1
-        elif self.y + self.size >= SCREEN_HEIGHT:
-            self.y = SCREEN_HEIGHT - self.size
-            self.vy *= -1
+        if self.y < -self.size:
+            self.y = SCREEN_HEIGHT
+        elif self.y > SCREEN_HEIGHT:
+            self.y = -self.size
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
@@ -124,7 +160,7 @@ def create_squares(num: int) -> List[Square]:
 
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("LAB 10 - Moving Squares Part 3")
+    pygame.display.set_caption("LAB 11 - Moving Squares Part IV")
     clock = pygame.time.Clock()
     squares = create_squares(NUM_SQUARES)
 
@@ -140,21 +176,16 @@ def main():
 
         current_time = pygame.time.get_ticks()
 
-        # I used an index loop here so I can easily replace the dead squares
-        # without messing up the list while iterating!
         for i in range(len(squares)):
-            # Check if it has outlived its lifespan
             if current_time - squares[i].birth_time > squares[i].lifespan:
-                # Rebirth! Create a new square with a new random size and position
                 size = random.uniform(MIN_SIZE, MAX_SIZE)
                 random_x = random.uniform(0, SCREEN_WIDTH - size)
                 random_y = random.uniform(0, SCREEN_HEIGHT - size)
 
-                # Replace the old dead square with the shiny new one!
                 squares[i] = Square(random_x, random_y, size)
 
-        # Standard update and draw
         for square in squares:
+            square.chase(squares)
             square.flee(squares)
             square.update()
             square.draw(screen)
