@@ -25,9 +25,6 @@
 ### 16-04-2026 19:21
 - **Prompt**: Regenerate the code explorer site from the current workspace Python sources, targeting docs/code_explorer.html. Do not modify main.py or any Python source files. Produce a single valid HTML document (no duplicate appended HTML). Keep sections coherent with current main.py state. Return files changed and a short summary.
 
-### 23-04-2026 17:10
-- **Prompt**: regenerate the code explorer site for this project
-
-### 23-04-2026 17:11
-- **Prompt**: Regenerate the code explorer site for this workspace project based on the current source code. Analyze d:/EPITA S2/AI4SE/projects/lab8-pygame/main.py and produce an updated single-file HTML dashboard at d:/EPITA S2/AI4SE/projects/lab8-pygame/docs/code_explorer_v1.html. Preserve existing filename and make sure the page includes architecture, patterns, type hints, code review findings, performance notes, and next-step links, with Mermaid diagrams. Ensure content matches current code (including chase + flee + lifespan replacement). Use responsive design and keep it self-contained except CDN mermaid script. Write the file directly.
+### 23-04-2026 17:16
+- **Prompt**: generate a new code Explorer site for this project do not use the v1
 
