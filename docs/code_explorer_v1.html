@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Explorer - main.py</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; background: #151a24; color: #e7ecf5; }
+header { padding: 16px 20px; background: #1d2433; border-bottom: 1px solid #2f3950; }
+.badge { display: inline-block; background: #2f3950; color: #a8d2ff; padding: 2px 8px; border-radius: 6px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 20px; border-bottom: 1px solid #2f3950; }
+.tab-btn { background: transparent; color: #b8c2d8; border: 1px solid #3b4760; padding: 7px 10px; cursor: pointer; border-radius: 8px; }
+.tab-btn.active { color: #ffffff; border-color: #77b3ff; }
+.tab-panel { display: none; padding: 16px 20px; }
+.tab-panel.active { display: block; }
+.subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.sub-btn { background: transparent; color: #b8c2d8; border: 1px solid #3b4760; padding: 6px 9px; cursor: pointer; border-radius: 999px; }
+.sub-btn.active { color: #ffffff; border-color: #77b3ff; }
+.sub-panel { display: none; }
+.sub-panel.active { display: block; }
+.diag { background: #1d2433; border: 1px solid #2f3950; border-radius: 10px; padding: 12px; min-height: 220px; overflow-x: auto; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+.card { background: #1d2433; border: 1px solid #2f3950; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+.row { display: flex; justify-content: space-between; gap: 10px; }
+.sev-high { color: #ff9f9f; }
+.sev-medium { color: #ffd28a; }
+.sev-low { color: #b9f7b9; }
+pre { white-space: pre-wrap; background: #0f1420; border-radius: 8px; padding: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Code Explorer</h1>
+  <div class="badge">main.py</div>
+  <p>Current workspace analysis for the pygame square simulation.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab('architecture', this)">Architecture</button>
+  <button class="tab-btn" onclick="switchTab('patterns', this)">Patterns</button>
+  <button class="tab-btn" onclick="switchTab('typehints', this)">Type Hints</button>
+  <button class="tab-btn" onclick="switchTab('codereview', this)">Code Review</button>
+  <button class="tab-btn" onclick="switchTab('performance', this)">Performance</button>
+  <button class="tab-btn" onclick="switchTab('nextsteps', this)">Next Steps</button>
+</nav>
+
+<section class="tab-panel active" id="tab-architecture">
+  <div class="subtabs">
+    <button class="sub-btn active" onclick="switchSub('call_graph', this)">Call Graph</button>
+    <button class="sub-btn" onclick="switchSub('dependency_graph', this)">Dependencies</button>
+    <button class="sub-btn" onclick="switchSub('full_sequence', this)">Full Sequence</button>
+    <button class="sub-btn" onclick="switchSub('seq_flee', this)">Flee Sequence</button>
+    <button class="sub-btn" onclick="switchSub('seq_life', this)">Life Sequence</button>
+    <button class="sub-btn" onclick="switchSub('data_squares', this)">Data squares</button>
+    <button class="sub-btn" onclick="switchSub('data_size', this)">Data size</button>
+    <button class="sub-btn" onclick="switchSub('data_motion', this)">Data motion</button>
+    <button class="sub-btn" onclick="switchSub('control_flow', this)">Control Flow</button>
+  </div>
+  <div class="sub-panel active" id="sub-call_graph"><h3>Call Graph</h3><div class="diag" id="diag-call_graph"></div><p>Main sets up and then repeats flee, update, draw each frame.</p></div>
+  <div class="sub-panel" id="sub-dependency_graph"><h3>Dependency Graph</h3><div class="diag" id="diag-dependency_graph"></div><p>Single Python file with pygame plus random, math, and typing.</p></div>
+  <div class="sub-panel" id="sub-full_sequence"><h3>Full Sequence</h3><div class="diag" id="diag-full_sequence"></div><p>Frame lifecycle includes events, lifespan replacement, simulation, and render.</p></div>
+  <div class="sub-panel" id="sub-seq_flee"><h3>Flee Sequence</h3><div class="diag" id="diag-seq_flee"></div><p>Squares avoid larger squares when inside the flee radius.</p></div>
+  <div class="sub-panel" id="sub-seq_life"><h3>Lifespan Sequence</h3><div class="diag" id="diag-seq_life"></div><p>Expired squares are replaced in place to keep list length fixed.</p></div>
+  <div class="sub-panel" id="sub-data_squares"><h3>Data Flow: squares score 5</h3><div class="diag" id="diag-data_squares"></div><p>Created, passed to behavior, mutated by replacement, rendered every frame.</p></div>
+  <div class="sub-panel" id="sub-data_size"><h3>Data Flow: size score 4</h3><div class="diag" id="diag-data_size"></div><p>Size affects speed, danger checks, bounds, and final draw dimensions.</p></div>
+  <div class="sub-panel" id="sub-data_motion"><h3>Data Flow: velocity score 3</h3><div class="diag" id="diag-data_motion"></div><p>Velocity is initialized, redirected by flee and jitter, then applied to position.</p></div>
+  <div class="sub-panel" id="sub-control_flow"><h3>Optional Control Flow</h3><div class="diag" id="diag-control_flow"></div><p>Shows quit and lifespan branching in the main loop.</p></div>
+</section>
+
+<section class="tab-panel" id="tab-patterns">
+  <div class="grid2">
+    <div>
+      <h3>Good Patterns</h3>
+      <div class="card">Readable naming: functions and variables communicate intent clearly.</div>
+      <div class="card">Encapsulation: Square keeps state and behavior together.</div>
+      <div class="card">Phase separation: frame loop keeps stable event, update, draw order.</div>
+    </div>
+    <div>
+      <h3>Potential Issues</h3>
+      <div class="card">Quadratic neighbor checks: flee is O n squared per frame.</div>
+      <div class="card">Missing config validation: MAX_SIZE and MIN_SIZE can cause division issues if misconfigured.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-typehints">
+  <div class="card"><strong>Type Hint Score: 3 / 5</strong></div>
+  <div class="grid2">
+    <div class="card"><strong>Strengths</strong><p>Annotated constructor/factory parameters and List[Square] usage in key interfaces.</p></div>
+    <div class="card"><strong>Gaps</strong><p>Missing explicit return None annotations and untyped draw screen surface parameter.</p></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-codereview">
+  <div class="grid2">
+    <div class="card" id="review-list"></div>
+    <div class="card" id="review-detail"></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-performance">
+  <div class="grid2">
+    <div>
+      <h3>Wins</h3>
+      <div class="card">In-place replacement avoids full list recreation.</div>
+      <div class="card">Per-object update math is lightweight.</div>
+    </div>
+    <div>
+      <h3>Risks</h3>
+      <div class="card">Flee pair checks dominate scaling cost.</div>
+      <div class="card">FPS text render each frame is minor but persistent work.</div>
+    </div>
+  </div>
+  <div class="card"><strong>Performance Score: 3 / 6</strong> - top risk is neighbor scan complexity.</div>
+</section>
+
+<section class="tab-panel" id="tab-nextsteps">
+  <div class="card"><a href="https://docs.python.org/3/library/typing.html" target="_blank" rel="noopener">Python typing docs</a></div>
+  <div class="card"><a href="https://www.pygame.org/docs/ref/time.html" target="_blank" rel="noopener">Pygame timing docs</a></div>
+  <div class="card"><a href="https://refactoring.guru/extract-method" target="_blank" rel="noopener">Extract method refactor</a></div>
+  <div class="card"><a href="https://en.wikipedia.org/wiki/Spatial_hashing" target="_blank" rel="noopener">Spatial hashing intro</a></div>
+</section>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+function switchSub(name, btn) {
+  document.querySelectorAll('.sub-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sub-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('sub-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+const reviewItems = [
+  { id: 0, title: 'Config can divide by zero', severity: 'high', snippet: 't = (self.size - MIN_SIZE) / (MAX_SIZE - MIN_SIZE)', shortNote: 'No startup guard for invalid constants.', fullExplanation: 'If MAX_SIZE equals MIN_SIZE the constructor will crash with ZeroDivisionError.', improvementHint: 'Validate constants before creating squares.' },
+  { id: 1, title: 'Order biased simulation', severity: 'medium', snippet: 'for square in squares: square.flee(squares); square.update()', shortNote: 'Later squares read partially updated state.', fullExplanation: 'Immediate update after flee introduces ordering effects in one frame.', improvementHint: 'Use a two-pass update.' },
+  { id: 2, title: 'Main has mixed responsibilities', severity: 'medium', snippet: 'def main(): ...', shortNote: 'Setup, event, lifecycle, simulation, and draw are combined.', fullExplanation: 'Large orchestration block is harder to test and evolve.', improvementHint: 'Extract helper functions by phase.' },
+  { id: 3, title: 'Flee loop scalability', severity: 'medium', snippet: 'for other in others:', shortNote: 'Nested comparisons scale poorly.', fullExplanation: 'Pairwise checks increase quickly with object count.', improvementHint: 'Use spatial buckets/hash.' },
+  { id: 4, title: 'Incomplete type hints', severity: 'low', snippet: 'def draw(self, screen):', shortNote: 'Some return and parameter types omitted.', fullExplanation: 'Missing annotations reduce static analysis value.', improvementHint: 'Add return None and pygame.Surface type hints.' }
+];
+
+function renderReviewList() {
+  const list = document.getElementById('review-list');
+  list.innerHTML = reviewItems.map(item => '<div class="card" onclick="selectReview(' + item.id + ')"><div class="row"><strong>' + item.title + '</strong><span class="sev-' + item.severity + '">' + item.severity + '</span></div><div>' + item.shortNote + '</div></div>').join('');
+}
+function selectReview(id) {
+  const item = reviewItems.find(x => x.id === id);
+  document.getElementById('review-detail').innerHTML = '<h3>' + item.title + '</h3><p><strong>Severity:</strong> ' + item.severity + '</p><p>' + item.fullExplanation + '</p><pre>' + item.snippet + '</pre><p><strong>Hint:</strong> ' + item.improvementHint + '</p>';
+}
+
+mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'dark' });
+const diagrams = {
+  call_graph: String.raw`graph TD
+    n1[program entry] --> n2[main setup]
+    n2 --> n3[create squares]
+    n2 --> n4[frame loop]
+    n4 --> n5[event poll]
+    n4 --> n6[lifespan replace]
+    n4 --> n7[flee update draw]`,
+  dependency_graph: String.raw`graph LR
+    n1[main module] --> n2[pygame package]
+    n1 --> n3[random module]
+    n1 --> n4[math module]
+    n1 --> n5[typing module]
+    click n2 href "https://www.pygame.org/docs/" "Open docs"
+    click n3 href "https://docs.python.org/3/library/random.html" "Open docs"
+    click n4 href "https://docs.python.org/3/library/math.html" "Open docs"
+    click n5 href "https://docs.python.org/3/library/typing.html" "Open docs"`,
+  full_sequence: String.raw`sequenceDiagram
+    participant p1 as OS
+    participant p2 as Main
+    participant p3 as Square
+    p1->>p2: start run
+    loop frame cycle
+      p2->>p3: flee update draw
+      p3-->>p2: return state
+    end
+    p2-->>p1: quit`,
+  seq_flee: String.raw`sequenceDiagram
+    participant p1 as Main
+    participant p2 as SquareA
+    participant p3 as SquareB
+    p1->>p2: call flee
+    p2->>p3: compare size
+    p2-->>p1: new velocity`,
+  seq_life: String.raw`sequenceDiagram
+    participant p1 as Main
+    participant p2 as SquareOld
+    participant p3 as SquareNew
+    p1->>p2: check lifespan
+    p1->>p3: replace if dead`,
+  data_squares: String.raw`graph TD
+    n1[list create] --> n2[state store]
+    n2 --> n3[frame loop]
+    n3 --> n4[behavior pass]
+    n3 --> n5[draw output]`,
+  data_size: String.raw`graph TD
+    n1[size sample] --> n2[speed cap]
+    n2 --> n3[danger compare]
+    n2 --> n4[draw bounds]`,
+  data_motion: String.raw`graph TD
+    n1[angle sample] --> n2[start velocity]
+    n2 --> n3[flee redirect]
+    n3 --> n4[jitter rotate]
+    n4 --> n5[position move]`,
+  control_flow: String.raw`graph TD
+    n1[frame start] --> n2[event read]
+    n2 --> n3{quit seen}
+    n3 -->|yes| n4[loop stop]
+    n3 -->|no| n1`
+};
+
+async function renderDiagrams() {
+  for (const key of Object.keys(diagrams)) {
+    const mount = document.getElementById('diag-' + key);
+    if (!mount) continue;
+    try {
+      const result = await mermaid.render('m' + key + Date.now(), diagrams[key]);
+      mount.innerHTML = result.svg;
+    } catch (err) {
+      mount.innerHTML = '<pre class="fallback">Render failed: ' + err.message + '\n\n' + diagrams[key] + '</pre>';
+    }
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderReviewList();
+  selectReview(0);
+  renderDiagrams();
+});
+</script>
+</body>
+</html>
