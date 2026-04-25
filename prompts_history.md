@@ -34,3 +34,6 @@
 ### 25-04-2026 19:24
 - **Prompt**: regenerate the code explorer site for this project
 
+### 25-04-2026 19:25
+- **Prompt**: Regenerate the code explorer dashboard for the current workspace based on the latest Python source files. Produce a single self-contained HTML file at docs/code_explorer.html (overwrite existing content, no duplicate appended HTML). Focus analysis on main.py and include architecture walkthrough, key functions/classes, control flow, data flow, notable risks, and Mermaid diagrams. Keep it readable for first-year students. Do not modify main.py.
+
