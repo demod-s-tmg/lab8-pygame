@@ -52,3 +52,6 @@
 ### 27-04-2026 11:01
 - **Prompt**: Generate the architecture documents for this project
 
+### 27-04-2026 11:01
+- **Prompt**: Generate architecture documentation for the project at d:\EPITA S2\AI4SE\projects\lab8-pygame. Produce docs/architecture.md with: 1) high-level architecture overview, 2) component/module breakdown, 3) class and function responsibilities, 4) call graph of main runtime loop, 5) sequence diagram of one frame update/render cycle, 6) data model/state section, 7) configuration constants section, and 8) extension points. Use Mermaid diagrams for call graph and sequence. Then generate docs/architecture.html as a static HTML rendering of the markdown content (including embedded Mermaid blocks as code if not renderable). Keep content concise and accurate to main.py. Write files directly in workspace.
+
