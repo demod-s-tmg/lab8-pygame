@@ -49,3 +49,6 @@
 ### 27-04-2026 10:53
 - **Prompt**: active the journal logger
 
+### 27-04-2026 11:01
+- **Prompt**: Generate the architecture documents for this project
+
