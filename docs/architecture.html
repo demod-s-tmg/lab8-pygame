@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>lab8-pygame Architecture</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --border: #d1d5db;
+      --accent: #0f766e;
+      --code-bg: #f3f4f6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3 { margin: 0 0 10px; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.2rem; color: var(--accent); }
+    p, li { color: var(--text); }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    .mermaid {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px;
+      overflow-x: auto;
+    }
+
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Architecture Documentation</h1>
+      <p class="muted">Source of truth: main.py</p>
+    </section>
+
+    <section class="card">
+      <h2>1) High-Level Architecture Overview</h2>
+      <p>This project is a single-file pygame simulation.</p>
+      <ul>
+        <li><code>main()</code> owns initialization, the game loop, frame timing, lifecycle replacement, and shutdown.</li>
+        <li><code>Square</code> encapsulates entity state and behavior (<code>chase</code>, <code>flee</code>, <code>update</code>, <code>draw</code>).</li>
+        <li>Global constants configure rendering, movement, behavior radii, jitter, and population.</li>
+      </ul>
+      <pre class="mermaid">flowchart TD
+    M["main.py"] --&gt; C["Constants"]
+    M --&gt; S["Square Class"]
+    M --&gt; F["Top-Level Functions"]
+
+    F --&gt; CR["create_squares(num)"]
+    F --&gt; MN["main()"]
+
+    MN --&gt; LOOP["Runtime Loop"]
+    LOOP --&gt; BHV["Behavior Step"]
+    LOOP --&gt; MOV["Movement Step"]
+    LOOP --&gt; RND["Render Step"]
+
+    S --&gt; CH["chase(others)"]
+    S --&gt; FL["flee(others)"]
+    S --&gt; UP["update(dt)"]
+    S --&gt; DR["draw(screen)"]</pre>
+    </section>
+
+    <section class="card">
+      <h2>2) Component / Module Breakdown</h2>
+      <ul>
+        <li><code>main.py</code>: Entire application module.</li>
+        <li>Constants block: Window size, square counts/sizes, speed limits, behavior thresholds, frame rate, colors.</li>
+        <li>Class <code>Square</code>: Entity model plus per-entity AI/motion/render behavior.</li>
+        <li><code>create_squares(num)</code>: Factory for initial entity list.</li>
+        <li><code>main()</code>: Orchestrator for pygame setup, per-frame updates, and teardown.</li>
+      </ul>
+      <h3>Dependency Graph</h3>
+      <pre class="mermaid">flowchart LR
+    APP["main.py"] --&gt; PG["pygame"]
+    APP --&gt; RD["random"]
+    APP --&gt; MT["math"]
+    APP --&gt; TY["typing.List"]
+
+    SQ["Square"] --&gt; PG
+    SQ --&gt; RD
+    SQ --&gt; MT
+
+    MAIN["main()"] --&gt; PG
+    MAIN --&gt; SQ
+    MAIN --&gt; CS["create_squares()"]</pre>
+    </section>
+
+    <section class="card">
+      <h2>3) Class and Function Responsibilities</h2>
+      <h3>Class: Square</h3>
+      <ul>
+        <li><code>__init__(x, y, size)</code>: Initializes position, size, speed-from-size mapping, velocity vector, random color, and lifetime window.</li>
+        <li><code>chase(others)</code>: Steers toward smaller nearby squares within <code>CHASE_RADIUS</code>.</li>
+        <li><code>flee(others)</code>: Steers away from larger nearby squares within <code>FLEE_RADIUS</code>.</li>
+        <li><code>update(dt)</code>: Applies random heading jitter, integrates position by delta time, wraps across screen bounds.</li>
+        <li><code>draw(screen)</code>: Renders rectangle onto pygame surface.</li>
+      </ul>
+      <h3>Functions</h3>
+      <ul>
+        <li><code>create_squares(num)</code>: Builds a list of randomly placed <code>Square</code> instances.</li>
+        <li><code>main()</code>: Validates config, initializes pygame resources, runs event/update/render loop, computes <code>dt</code>, quits pygame.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>4) Call Graph of Main Runtime Loop</h2>
+      <pre class="mermaid">flowchart TD
+    START["Program Start"] --&gt; ENTRY["if __name__ == '__main__': main()"]
+    ENTRY --&gt; INIT["main(): init display, clock, squares, font"]
+    INIT --&gt; LOOP{"running"}
+
+    LOOP --&gt; EV["pygame.event.get()"]
+    EV --&gt; QCHK{"QUIT event?"}
+    QCHK -- "yes" --&gt; STOP["running = False"]
+    QCHK -- "no" --&gt; CLR["screen.fill(BACKGROUND_COLOR)"]
+    STOP --&gt; LOOP
+
+    CLR --&gt; TIME["current_time = pygame.time.get_ticks()"]
+    TIME --&gt; LIFE["respawn expired squares"]
+    LIFE --&gt; BEH["for square: chase(); flee()"]
+    BEH --&gt; UPD["for square: update(dt); draw(screen)"]
+    UPD --&gt; FPS["render FPS text + blit"]
+    FPS --&gt; FLIP["pygame.display.flip()"]
+    FLIP --&gt; TICK["dt = clock.tick(FPS) / 1000.0"]
+    TICK --&gt; LOOP
+
+    LOOP --&gt; END["pygame.quit()"]</pre>
+    </section>
+
+    <section class="card">
+      <h2>5) Sequence Diagram: One Frame Update/Render Cycle</h2>
+      <pre class="mermaid">sequenceDiagram
+    participant Main as "main()"
+    participant Pygame as "pygame"
+    participant Clock as "clock"
+    participant List as "squares list"
+    participant Square as "Square instance"
+    participant Screen as "screen surface"
+
+    Main-&gt;&gt;Pygame: "event.get()"
+    alt "Quit event present"
+        Main-&gt;&gt;Main: "running = False"
+    else "Continue frame"
+        Main-&gt;&gt;Screen: "fill(BACKGROUND_COLOR)"
+        Main-&gt;&gt;Pygame: "time.get_ticks()"
+        Main-&gt;&gt;List: "replace expired squares"
+
+        loop "Behavior pass for each square"
+            Main-&gt;&gt;Square: "chase(squares)"
+            Main-&gt;&gt;Square: "flee(squares)"
+        end
+
+        loop "Update + draw pass for each square"
+            Main-&gt;&gt;Square: "update(dt)"
+            Main-&gt;&gt;Square: "draw(screen)"
+        end
+
+        Main-&gt;&gt;Screen: "blit(FPS text)"
+        Main-&gt;&gt;Pygame: "display.flip()"
+        Main-&gt;&gt;Clock: "tick(FPS)"
+        Clock--&gt;&gt;Main: "dt for next frame"
+    end</pre>
+    </section>
+
+    <section class="card">
+      <h2>6) Data Model / State</h2>
+      <h3>Square instance state</h3>
+      <ul>
+        <li>Spatial: <code>x</code>, <code>y</code>, <code>size</code></li>
+        <li>Motion: <code>vx</code>, <code>vy</code>, <code>max_speed</code></li>
+        <li>Visual: <code>color</code></li>
+        <li>Lifecycle: <code>birth_time</code>, <code>lifespan</code></li>
+      </ul>
+      <h3>Runtime state in main()</h3>
+      <ul>
+        <li><code>screen</code>: pygame display surface</li>
+        <li><code>clock</code>: frame timing source</li>
+        <li><code>squares</code>: mutable list of active entities</li>
+        <li><code>font</code>: FPS text renderer</li>
+        <li><code>dt</code>: delta time in seconds used by <code>update</code></li>
+        <li><code>running</code>: loop control flag</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>7) Configuration Constants</h2>
+      <ul>
+        <li>Display: <code>SCREEN_WIDTH=800</code>, <code>SCREEN_HEIGHT=600</code>, <code>BACKGROUND_COLOR=(255, 255, 255)</code>, <code>FPS=60</code></li>
+        <li>Population/size: <code>NUM_SQUARES=20</code>, <code>MIN_SIZE=10</code>, <code>MAX_SIZE=50</code></li>
+        <li>Speed: <code>GLOBAL_MAX_SPEED=240</code>, <code>V_MAX=GLOBAL_MAX_SPEED</code>, <code>V_MIN=60</code></li>
+        <li>Random steering: <code>JITTER_PROBABILITY=0.04</code>, <code>MAX_JITTER_ANGLE=0.12</code></li>
+        <li>Behavior radii: <code>FLEE_RADIUS=60</code>, <code>CHASE_RADIUS=90</code></li>
+      </ul>
+      <p>Notes: size controls max speed linearly between <code>V_MAX</code> and <code>V_MIN</code>. <code>main()</code> guards against <code>MAX_SIZE &lt;= MIN_SIZE</code> to avoid division by zero in speed interpolation.</p>
+    </section>
+
+    <section class="card">
+      <h2>8) Extension Points</h2>
+      <ul>
+        <li>Behavior composition order: <code>chase()</code> then <code>flee()</code>; add flocking/alignment or obstacle avoidance in this pass.</li>
+        <li>Entity lifecycle: replace age-based respawn with score/collision/event-driven logic.</li>
+        <li>Rendering: replace rectangle drawing with sprites, rotation, or particle effects in <code>draw()</code>.</li>
+        <li>Input/control: add keyboard/mouse interactions in event handling.</li>
+        <li>Configuration: move constants to a settings object or external config file.</li>
+        <li>Entity type system: add subclasses or strategy objects for behavior variants.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, securityLevel: "loose" });
+  </script>
+</body>
+</html>
