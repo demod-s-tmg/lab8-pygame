@@ -179,3 +179,8 @@
 - **Hook Version**: 1.02
 - **Date**: 27-04-2026 10:19
 - **Prompt**: regenerate the code explorer site for this project
+
+### **New Interaction**
+- **Hook Version**: 1.02
+- **Date**: 27-04-2026 10:19
+- **Prompt**: Refresh the existing code explorer dashboard for this workspace based on the current main.py. Keep it as a single self-contained HTML file in docs/code_explorer.html and make sure it reflects the latest source details: validation guard in main(), dt-based update(dt), typed draw(self, screen: pygame.Surface), chase then flee ordering note, and the split update/draw loops. Focus on student-friendly explanations, architecture, patterns, type hints, code review, performance, and Mermaid diagrams. Do not modify main.py.
