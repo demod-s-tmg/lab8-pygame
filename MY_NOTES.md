@@ -41,3 +41,26 @@ questions / reflections:
 removing the hard walls and adding the screen wrap was definitely the best fix. it makes the whole simulation feel so much more dynamic, like looking at an infinite petri dish instead of a closed box.
 
 it was really cool to see how just flipping two variables (the size check and the vector subtraction direction) completely changed a square's behavior from a terrified prey into an aggressive predator.
+
+#feedback from professor
+understandings:
+i was still using frame-based movement instead of time-based, and the code explorer warned about a potential division by zero crash. i learned that if someone accidentally set MIN_SIZE and MAX_SIZE to the exact same number, my size interpolation math t = (size - min) / (max - min) would divide by zero and crash the whole program. i also learned about "delta time" (dt), which separates the game's physics from its frame rate, making sure the squares move at the exact same speed no matter how fast or slow the computer runs.
+
+decisions:
+fixing the crash: i put a strict validation guard right at the beginning of main(). if MAX_SIZE <= MIN_SIZE, it uses raise ValueError to stop the program immediately and print a clear error message. it fails fast before the pygame window even tries to open.
+
+adding delta time (dt): i changed the speed logic from "pixels per frame" to "pixels per second". so GLOBAL_MAX_SPEED went from 4.0 to 240.0. in the main loop, i calculate the time passed in seconds using dt = clock.tick(FPS) / 1000.0 and pass that dt into the update() method. inside update, i changed the movement math to self.x += self.vx * dt. i also realized the jitter was tied to frames, so i scaled JITTER_PROBABILITY by (dt * 60) so the random turning behavior happens at the exact same rate it used to.
+
+questions / reflections:
+it's crazy how much smoother time-based movement feels compared to frame-based. tying physics strictly to the frame rate seems like an easy trap to fall into when starting out with pygame. the safety guard for the min/max size was also a really good lesson in defensive programming—you can't just trust that the configuration constants will always be valid!
+
+#code explorer refiniments 
+understandings:
+the new code explorer caught some really interesting architecture flaws. first, my type hints were incomplete because i forgot return types. more importantly, i learned about "order-dependent updates". because i was calculating intents (chase/flee) and moving the squares inside the exact same loop, the last square in the list was making decisions based on the *new* positions of the first squares. in a physics simulation, everyone needs to evaluate the board at the same time based on the same frame data.
+
+decisions:
+two-pass update: i split the main loop into two separate passes. the first pass is just "thinking" (calling chase and flee for everyone). the second pass is "acting" (calling update and draw for everyone). this makes the simulation truly deterministic and fixes the order-dependency bug. i also added a comment explaining that flee intentionally runs after chase so survival overrides hunting.
+
+type hints: i went back and added -> None to all the methods that don't return anything, and explicitly tagged screen: pygame.Surface in the draw method to get a perfect typing score.
+
+ignoring the quadratic scan warning: the explorer warned that checking every square against every other square is O(n^2) and recommended a spatial grid. i decided to accept this risk and ignore it for now. we only have 20 squares so it runs perfectly fine.

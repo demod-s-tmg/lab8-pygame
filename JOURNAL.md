@@ -184,3 +184,12 @@
 - **Hook Version**: 1.02
 - **Date**: 27-04-2026 10:19
 - **Prompt**: Refresh the existing code explorer dashboard for this workspace based on the current main.py. Keep it as a single self-contained HTML file in docs/code_explorer.html and make sure it reflects the latest source details: validation guard in main(), dt-based update(dt), typed draw(self, screen: pygame.Surface), chase then flee ordering note, and the split update/draw loops. Focus on student-friendly explanations, architecture, patterns, type hints, code review, performance, and Mermaid diagrams. Do not modify main.py.
+- **Agent Version**: 2.3
+- **Date**: 27-04-2026 10:20
+- **User**: Demod
+- **Prompt**: Refresh the existing code explorer dashboard for this workspace based on the current main.py. Keep it as a single self-contained HTML file in docs/code_explorer.html and make sure it reflects the latest source details: validation guard in main(), dt-based update(dt), typed draw(self, screen: pygame.Surface), chase then flee ordering note, and the split update/draw loops. Focus on student-friendly explanations, architecture, patterns, type hints, code review, performance, and Mermaid diagrams. Do not modify main.py.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Refreshed docs/code_explorer.html to reflect the current main.py details, including the startup validation guard, dt-based movement, typed draw surface, chase then flee ordering note, split update/draw loops, updated diagrams, and revised review/performance/type-hint sections. No Python source files were modified.
+- **Context and Reasons for Changes**: The user requested a dashboard refresh that matches the latest source behavior while keeping main.py untouched, so the explorer was updated to stay aligned with the current runtime flow and teaching focus.
