@@ -64,3 +64,6 @@
 ### 27-04-2026 11:45
 - **Prompt**: analyze this project and produce a light refactoring plan
 
+### 27-04-2026 11:45
+- **Prompt**: Analyze project root d:\EPITA S2\AI4SE\projects\lab8-pygame and create a beginner-friendly light refactoring plan for the current code (especially main.py). Do not refactor code. Produce Markdown with the exact required sections and write it to d:\EPITA S2\AI4SE\projects\lab8-pygame\refactoring.plan.md. Keep steps incremental, preserve behavior, and explicitly instruct adding concise inline comments in final refactored code for what/why/concepts.
+
