@@ -48,21 +48,27 @@ class Square:
         self.birth_time: int = pygame.time.get_ticks()
         self.lifespan: float = random.uniform(30.0, 180.0) * 1000
 
+    def get_center(self) -> tuple[float, float]:
+        """Return the center coordinates of this square. Extracted helper reduces duplication."""
+        return (self.x + self.size / 2, self.y + self.size / 2)
+
+    def is_expired(self, current_time: int) -> bool:
+        """Check if this square has exceeded its lifespan. Encapsulates expiry logic."""
+        return current_time - self.birth_time > self.lifespan
+
     def chase(self, others: List["Square"]) -> None:
         chase_vx = 0
         chase_vy = 0
         count = 0
 
-        center_x = self.x + self.size / 2
-        center_y = self.y + self.size / 2
+        center_x, center_y = self.get_center()  # Reuse one center formula everywhere.
 
         for other in others:
             if other is self:
                 continue
 
             if self.size > other.size:
-                other_center_x = other.x + other.size / 2
-                other_center_y = other.y + other.size / 2
+                other_center_x, other_center_y = other.get_center()  # Single source of truth for center calculation.
 
                 dx = other_center_x - center_x
                 dy = other_center_y - center_y
@@ -84,16 +90,14 @@ class Square:
         flee_vy = 0
         count = 0
 
-        center_x = self.x + self.size / 2
-        center_y = self.y + self.size / 2
+        center_x, center_y = self.get_center()  # Reuse one center formula everywhere.
 
         for other in others:
             if other is self:
                 continue
 
             if other.size > self.size:
-                other_center_x = other.x + other.size / 2
-                other_center_y = other.y + other.size / 2
+                other_center_x, other_center_y = other.get_center()  # Single source of truth for center calculation.
 
                 dx = center_x - other_center_x
                 dy = center_y - other_center_y
@@ -140,15 +144,19 @@ class Square:
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
 
 
+def create_random_square() -> Square:
+    """Create a new square with random size and valid position. Spawn logic centralized to avoid inconsistencies."""
+    size = random.uniform(MIN_SIZE, MAX_SIZE)
+    random_x = random.uniform(0, SCREEN_WIDTH - size)
+    random_y = random.uniform(0, SCREEN_HEIGHT - size)
+    return Square(random_x, random_y, size)
+
+
 def create_squares(num: int) -> List[Square]:
+    """Initialize all squares. Uses centralized spawn helper for consistency."""
     squares_list = []
     for _ in range(num):
-        size = random.uniform(MIN_SIZE, MAX_SIZE)
-        random_x = random.uniform(0, SCREEN_WIDTH - size)
-        random_y = random.uniform(0, SCREEN_HEIGHT - size)
-
-        new_square = Square(random_x, random_y, size)
-        squares_list.append(new_square)
+        squares_list.append(create_random_square())
     return squares_list
 
 
@@ -178,12 +186,8 @@ def main():
         current_time = pygame.time.get_ticks()
 
         for i in range(len(squares)):
-            if current_time - squares[i].birth_time > squares[i].lifespan:
-                size = random.uniform(MIN_SIZE, MAX_SIZE)
-                random_x = random.uniform(0, SCREEN_WIDTH - size)
-                random_y = random.uniform(0, SCREEN_HEIGHT - size)
-
-                squares[i] = Square(random_x, random_y, size)
+            if squares[i].is_expired(current_time):  # Encapsulation: check expiry via method.
+                squares[i] = create_random_square()  # One helper controls all spawn rules.
 
         for square in squares:
             square.chase(squares)
