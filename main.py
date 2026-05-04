@@ -204,12 +204,11 @@ def main():
         current_time = pygame.time.get_ticks()
 
         for i in range(len(squares)):
-            if squares[i].is_expired(
-                current_time
-            ):  # Encapsulation: check expiry via method.
-                squares[i] = (
-                    create_random_square()
-                )  # One helper controls all spawn rules.
+            if squares[i].is_expired(current_time):
+
+                old_size = squares[i].size
+
+                squares[i] = create_fixed_square(old_size)
 
         for square in squares:
             square.chase(squares)
