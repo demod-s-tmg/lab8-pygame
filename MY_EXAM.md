@@ -4,4 +4,7 @@ Instead of one loop, we likely need a sequence of operations or multiple loops o
 for qn 2.
 instead of using the old squares[i] = create_random_square(), i use squares[i] = create_fixed_square(old_size) this way When square die, they are re-spawn with the same size. instead of a random square.
 
-for qn 3. 
+for qn3.
+during the class i did this exercise and to fix the squares getting stuck on the walls, i decided to completely replace the hard bounce boundary logic inside update() with "screen wrapping". now, if self.x < -self.size, i teleport it to SCREEN_WIDTH, and vice versa. this completely stopped the wall pinning bug because there are no solid walls to get stuck on anymore.
+
+for qn 4.
