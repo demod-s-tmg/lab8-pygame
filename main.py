@@ -22,6 +22,7 @@ CHASE_RADIUS = 90
 
 BACKGROUND_COLOR = (255, 255, 255)
 FPS = 60
+TRAILS_LENGTH = 30
 
 
 class Square:
@@ -47,6 +48,7 @@ class Square:
 
         self.birth_time: int = pygame.time.get_ticks()
         self.lifespan: float = random.uniform(30.0, 180.0) * 1000
+        self.history: List[tuple[float, float]] = []
 
     def get_center(self) -> tuple[float, float]:
         return (self.x + self.size / 2, self.y + self.size / 2)
@@ -123,6 +125,9 @@ class Square:
                 self.vy = (flee_vy / mag) * self.max_speed
 
     def update(self, dt: float) -> None:
+        self.history.append(self.get_center())
+        if len(self.history) > TRAILS_LENGTH:
+            self.history.pop(0)
         if random.random() < JITTER_PROBABILITY * (dt * 60):
             current_angle = math.atan2(self.vy, self.vx)
             jitter = random.uniform(-MAX_JITTER_ANGLE, MAX_JITTER_ANGLE)
@@ -146,6 +151,14 @@ class Square:
             self.y = -self.size
 
     def draw(self, screen: pygame.Surface) -> None:
+        if len(self.history) >= 2:
+            for i in range(len(self.history) - 1):
+                p1 = self.history[i]
+                p2 = self.history[i + 1]
+                
+                dist = math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+                if dist < SCREEN_WIDTH / 2:
+                    pygame.draw.line(screen, self.color, p1, p2, 2)
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
 
 

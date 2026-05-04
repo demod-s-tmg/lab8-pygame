@@ -17,4 +17,4 @@ for qn6.
 for this exercise, i made the predator grow proportionally by calculating the area of both squares, adding them together, and then getting the square root to find the new width
 
 for qn7.
-
+for this exercise, i added a self.history list to the square class that appends the get_center() coordinates every frame inside the update loop. i used pop(0) to ensure the list length never exceeds TRAILS_LENGTH (30). and if dist < SCREEN_WIDTH / 2: it cut the lines into half.
