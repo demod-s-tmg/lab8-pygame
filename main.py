@@ -49,12 +49,16 @@ class Square:
         self.lifespan: float = random.uniform(30.0, 180.0) * 1000
 
     def get_center(self) -> tuple[float, float]:
-        """Return the center coordinates of this square. Extracted helper reduces duplication."""
         return (self.x + self.size / 2, self.y + self.size / 2)
 
     def is_expired(self, current_time: int) -> bool:
-        """Check if this square has exceeded its lifespan. Encapsulates expiry logic."""
         return current_time - self.birth_time > self.lifespan
+
+    def check_collision(self, other: "Square") -> bool:
+        rect_self = pygame.Rect(self.x, self.y, self.size, self.size)
+        rect_other = pygame.Rect(other.x, other.y, other.size, other.size)
+
+        return rect_self.colliderect(rect_other)
 
     def chase(self, others: List["Square"]) -> None:
         chase_vx = 0

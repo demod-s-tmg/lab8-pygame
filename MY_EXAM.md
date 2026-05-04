@@ -8,3 +8,6 @@ for qn3.
 during the class i did this exercise and to fix the squares getting stuck on the walls, i decided to completely replace the hard bounce boundary logic inside update() with "screen wrapping". now, if self.x < -self.size, i teleport it to SCREEN_WIDTH, and vice versa. this completely stopped the wall pinning bug because there are no solid walls to get stuck on anymore.
 
 for qn 4.
+for this exercise i used Pygame's built-in colliderect method by temporarily creating pygame.Rect objects for the check
+
+for qn5.
