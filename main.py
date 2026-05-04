@@ -215,6 +215,17 @@ def main():
                 if squares[i].check_collision(squares[j]):
                     if squares[i].size > squares[j].size:
                         prey_old_size = squares[j].size
+                        new_size = math.sqrt(squares[i].size**2 + prey_old_size**2)
+                        
+                        squares[i].size = min(new_size, 150)
+                        t = (squares[i].size - MIN_SIZE) / (MAX_SIZE - MIN_SIZE)
+                        computed_speed = V_MAX - t * (V_MAX - V_MIN)
+                        squares[i].max_speed = max(computed_speed, 20)
+                        
+                        current_mag = math.hypot(squares[i].vx, squares[i].vy)
+                        if current_mag > 0:
+                            squares[i].vx = (squares[i].vx / current_mag) * squares[i].max_speed
+                            squares[i].vy = (squares[i].vy / current_mag) * squares[i].max_speed
                         squares[j] = create_fixed_square(prey_old_size)
 
         for square in squares:

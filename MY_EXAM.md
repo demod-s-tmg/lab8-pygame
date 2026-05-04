@@ -14,3 +14,7 @@ for qn5.
 for this exercise, i implimented a nested loop to check every square against every other square in the list. i used the check_collision method from exercise 4 to detect overlaps. once a collision is confirmed, i check if the predator square's size is greater than the prey square's size. if it is, the smaller square is considered "eaten" and is immediately replaced by a newly spawned square using the create_fixed_square(old_size) helper, ensuring it respawns with its exact original size.
 
 for qn6. 
+for this exercise, i made the predator grow proportionally by calculating the area of both squares, adding them together, and then getting the square root to find the new width
+
+for qn7.
+
