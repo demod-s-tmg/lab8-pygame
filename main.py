@@ -65,7 +65,7 @@ class Square:
         chase_vy = 0
         count = 0
 
-        center_x, center_y = self.get_center()  # Reuse one center formula everywhere.
+        center_x, center_y = self.get_center()  
 
         for other in others:
             if other is self:
@@ -74,7 +74,7 @@ class Square:
             if self.size > other.size:
                 other_center_x, other_center_y = (
                     other.get_center()
-                )  # Single source of truth for center calculation.
+                )  
 
                 dx = other_center_x - center_x
                 dy = other_center_y - center_y
@@ -96,7 +96,7 @@ class Square:
         flee_vy = 0
         count = 0
 
-        center_x, center_y = self.get_center()  # Reuse one center formula everywhere.
+        center_x, center_y = self.get_center()  
 
         for other in others:
             if other is self:
@@ -105,7 +105,7 @@ class Square:
             if other.size > self.size:
                 other_center_x, other_center_y = (
                     other.get_center()
-                )  # Single source of truth for center calculation.
+                )  
 
                 dx = center_x - other_center_x
                 dy = center_y - other_center_y
@@ -123,7 +123,6 @@ class Square:
                 self.vy = (flee_vy / mag) * self.max_speed
 
     def update(self, dt: float) -> None:
-        # Adjusted jitter probability to be frame-rate independent
         if random.random() < JITTER_PROBABILITY * (dt * 60):
             current_angle = math.atan2(self.vy, self.vx)
             jitter = random.uniform(-MAX_JITTER_ANGLE, MAX_JITTER_ANGLE)
@@ -133,7 +132,6 @@ class Square:
             self.vx = math.cos(new_angle) * speed
             self.vy = math.sin(new_angle) * speed
 
-        # Multiplied velocity by delta time
         self.x += self.vx * dt
         self.y += self.vy * dt
 
@@ -152,7 +150,6 @@ class Square:
 
 
 def create_random_square() -> Square:
-    """Create a new square with random size and valid position. Spawn logic centralized to avoid inconsistencies."""
     size = random.uniform(MIN_SIZE, MAX_SIZE)
     random_x = random.uniform(0, SCREEN_WIDTH - size)
     random_y = random.uniform(0, SCREEN_HEIGHT - size)
@@ -160,14 +157,12 @@ def create_random_square() -> Square:
 
 
 def create_fixed_square(size: float) -> Square:
-    """Create a new square with a specific fixed size and random valid position."""
     random_x = random.uniform(0, SCREEN_WIDTH - size)
     random_y = random.uniform(0, SCREEN_HEIGHT - size)
     return Square(random_x, random_y, size)
 
 
 def create_squares() -> List[Square]:
-    """Initialize squares with the specific mix required for Exercise 1."""
     squares_list = []
 
     for _ in range(5):
@@ -185,7 +180,6 @@ def create_squares() -> List[Square]:
 def main():
     if MAX_SIZE <= MIN_SIZE:
         raise ValueError(
-            "Configuration Error: MAX_SIZE must be strictly greater than MIN_SIZE to prevent division by zero."
         )
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -195,7 +189,7 @@ def main():
 
     font = pygame.font.SysFont("Arial", 20, bold=True)
 
-    dt = 0.0  # Initialize delta time
+    dt = 0.0
 
     running = True
     while running:
@@ -213,10 +207,18 @@ def main():
                 old_size = squares[i].size
 
                 squares[i] = create_fixed_square(old_size)
+      
+        for i in range(len(squares)):
+            for j in range(len(squares)):
+                if i == j:
+                    continue 
+                if squares[i].check_collision(squares[j]):
+                    if squares[i].size > squares[j].size:
+                        prey_old_size = squares[j].size
+                        squares[j] = create_fixed_square(prey_old_size)
 
         for square in squares:
             square.chase(squares)
-            # Flee runs after chase intentionally so survival overrides hunting
             square.flee(squares)
 
         for square in squares:
@@ -228,7 +230,6 @@ def main():
 
         pygame.display.flip()
 
-        # Calculate delta time in seconds for the next frame
         dt = clock.tick(FPS) / 1000.0
 
     pygame.quit()

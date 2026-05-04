@@ -11,3 +11,6 @@ for qn 4.
 for this exercise i used Pygame's built-in colliderect method by temporarily creating pygame.Rect objects for the check
 
 for qn5.
+for this exercise, i implimented a nested loop to check every square against every other square in the list. i used the check_collision method from exercise 4 to detect overlaps. once a collision is confirmed, i check if the predator square's size is greater than the prey square's size. if it is, the smaller square is considered "eaten" and is immediately replaced by a newly spawned square using the create_fixed_square(old_size) helper, ensuring it respawns with its exact original size.
+
+for qn6. 
