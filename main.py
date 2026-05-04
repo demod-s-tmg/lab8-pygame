@@ -68,7 +68,9 @@ class Square:
                 continue
 
             if self.size > other.size:
-                other_center_x, other_center_y = other.get_center()  # Single source of truth for center calculation.
+                other_center_x, other_center_y = (
+                    other.get_center()
+                )  # Single source of truth for center calculation.
 
                 dx = other_center_x - center_x
                 dy = other_center_y - center_y
@@ -97,7 +99,9 @@ class Square:
                 continue
 
             if other.size > self.size:
-                other_center_x, other_center_y = other.get_center()  # Single source of truth for center calculation.
+                other_center_x, other_center_y = (
+                    other.get_center()
+                )  # Single source of truth for center calculation.
 
                 dx = center_x - other_center_x
                 dy = center_y - other_center_y
@@ -139,7 +143,6 @@ class Square:
         elif self.y > SCREEN_HEIGHT:
             self.y = -self.size
 
-    # --- ADDED TYPE HINT FOR SCREEN HERE ---
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
 
@@ -152,11 +155,26 @@ def create_random_square() -> Square:
     return Square(random_x, random_y, size)
 
 
-def create_squares(num: int) -> List[Square]:
-    """Initialize all squares. Uses centralized spawn helper for consistency."""
+def create_fixed_square(size: float) -> Square:
+    """Create a new square with a specific fixed size and random valid position."""
+    random_x = random.uniform(0, SCREEN_WIDTH - size)
+    random_y = random.uniform(0, SCREEN_HEIGHT - size)
+    return Square(random_x, random_y, size)
+
+
+def create_squares() -> List[Square]:
+    """Initialize squares with the specific mix required for Exercise 1."""
     squares_list = []
-    for _ in range(num):
-        squares_list.append(create_random_square())
+
+    for _ in range(5):
+        squares_list.append(create_fixed_square(25))
+
+    for _ in range(10):
+        squares_list.append(create_fixed_square(10))
+
+    for _ in range(30):
+        squares_list.append(create_fixed_square(4))
+
     return squares_list
 
 
@@ -169,7 +187,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("LAB 11 - Moving Squares Part IV")
     clock = pygame.time.Clock()
-    squares = create_squares(NUM_SQUARES)
+    squares = create_squares()
 
     font = pygame.font.SysFont("Arial", 20, bold=True)
 
@@ -186,8 +204,12 @@ def main():
         current_time = pygame.time.get_ticks()
 
         for i in range(len(squares)):
-            if squares[i].is_expired(current_time):  # Encapsulation: check expiry via method.
-                squares[i] = create_random_square()  # One helper controls all spawn rules.
+            if squares[i].is_expired(
+                current_time
+            ):  # Encapsulation: check expiry via method.
+                squares[i] = (
+                    create_random_square()
+                )  # One helper controls all spawn rules.
 
         for square in squares:
             square.chase(squares)
